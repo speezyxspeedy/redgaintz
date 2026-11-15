@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://terrascan.example/schemas/analysis_run.schema.json",
+  "title": "Analysis run metadata",
+  "type": "object",
+  "required": ["run_id", "dataset_id", "dataset_version", "access_date", "data_origin", "raw_sha256", "code_git_sha"],
+  "properties": {
+    "run_id": { "type": "string", "minLength": 1 },
+    "dataset_id": { "type": "string", "minLength": 1 },
+    "dataset_version": { "type": "string", "minLength": 1 },
+    "access_date": { "type": "string", "format": "date-time" },
+    "data_origin": { "enum": ["live", "cached"] },
+    "raw_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "code_git_sha": { "type": ["string", "null"], "pattern": "^[a-f0-9]{40,64}$" },
+    "request_params": { "type": "object" }
+  },
+  "additionalProperties": true
+}

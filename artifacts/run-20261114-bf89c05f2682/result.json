@@ -1,0 +1,675 @@
+{
+  "run_id": "run-20261114-bf89c05f2682",
+  "region_id": "IN-MH-VID",
+  "boundary_version": "geoBoundaries-IND-ADM2-76128533-2023-01-19",
+  "dataset_id": "NASA_POWER_MERRA2_PRECTOTCORR_DAILY",
+  "dataset_version": "POWER API v2.10.3; source MERRA2",
+  "variable": "PRECTOTCORR",
+  "units": "mm/year",
+  "aggregation": "annual_total",
+  "observations": [
+    {
+      "time": 2001,
+      "value": 979.5287888852107,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2002,
+      "value": 913.8679691489883,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2003,
+      "value": 1158.198875673454,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2004,
+      "value": 803.2177350114767,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2005,
+      "value": 1237.666374547778,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2006,
+      "value": 1375.6481185479179,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2007,
+      "value": 1013.1470551019601,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2008,
+      "value": 941.4162353910491,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2009,
+      "value": 989.0292553524672,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2010,
+      "value": 1404.315501087217,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2011,
+      "value": 978.2045319888441,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2012,
+      "value": 1162.5086140158098,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2013,
+      "value": 1475.0659222284696,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2014,
+      "value": 934.7519094971901,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2015,
+      "value": 1124.756000233341,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2016,
+      "value": 1179.834601186374,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2017,
+      "value": 951.7054621161749,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2018,
+      "value": 971.6036806460478,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2019,
+      "value": 1218.2216541862979,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2020,
+      "value": 1229.5010842526876,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2021,
+      "value": 1224.1061581046704,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2022,
+      "value": 1530.9751251599796,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2023,
+      "value": 1240.5356419990376,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2024,
+      "value": 1380.3464346423775,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    },
+    {
+      "time": 2025,
+      "value": 1381.1205566393487,
+      "valid_fraction": 1.0,
+      "cell_count": 26
+    }
+  ],
+  "trend": {
+    "method": "Mann-Kendall with tie-corrected variance; Sen's slope",
+    "sample_count": 25,
+    "alpha": 0.05,
+    "mk_score": 112,
+    "mk_z": 2.5924014840578717,
+    "p_value": 0.009530847381806366,
+    "significant": true,
+    "direction": "increasing",
+    "sen_slope": 14.207165032001654,
+    "sen_slope_ci95": [
+      3.6615156906231303,
+      24.758142534893743
+    ],
+    "sen_intercept": -27468.972280390655,
+    "ols_slope": 12.935408243508862,
+    "ols_p_value": 0.015353730153320613,
+    "lag1_autocorrelation": -0.14108080098334314,
+    "lag1_autocorrelation_threshold": 0.4,
+    "lag1_autocorrelation_flag": false,
+    "span_years": 24.0,
+    "total_change": 340.9719607680397,
+    "observed_mean": 1151.9709314257668,
+    "percent_change_of_mean": 29.59900735915505,
+    "missing_years_excluded": 0,
+    "interpretation": "Statistical trend only; this result does not establish causation."
+  },
+  "findings": "A statistically significant increasing trend was detected.",
+  "provenance": {
+    "run_id": "run-20261114-bf89c05f2682",
+    "dataset_id": "NASA_POWER_MERRA2_PRECTOTCORR_DAILY",
+    "dataset_version": "POWER API v2.10.3; source MERRA2",
+    "access_date": "2026-11-14T15:46:43.477682+00:00",
+    "data_origin": "live",
+    "raw_sha256": "b529e95990d0351d46d49aa1d23a7982af33d1ce57c337c93f3b63e27e473079",
+    "raw_sha256_algorithm": "SHA-256 of ordered source-file SHA-256 hex digests",
+    "raw_sources": [
+      {
+        "file": "NASA_POWER_regional_20010101_20011231_28ecb25abedf.json",
+        "sidecar": "NASA_POWER_regional_20010101_20011231_28ecb25abedf.sidecar.json",
+        "sha256": "28ecb25abedf1396fc510f579108faf11d73987a8d2fd399c42d17b97efab29e",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20010101",
+          "end": "20011231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:45:55.291420+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20020101_20021231_48b7a5c51c64.json",
+        "sidecar": "NASA_POWER_regional_20020101_20021231_48b7a5c51c64.sidecar.json",
+        "sha256": "48b7a5c51c6414da23b15f4b9b9a0017468e2f4e3c5c2944de53a35a604597bf",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20020101",
+          "end": "20021231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:45:56.904108+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20030101_20031231_a49c4ca3fe90.json",
+        "sidecar": "NASA_POWER_regional_20030101_20031231_a49c4ca3fe90.sidecar.json",
+        "sha256": "a49c4ca3fe908e6d375c1079125fff358a2f135e7c8e5f7faec50943998426d6",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20030101",
+          "end": "20031231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:45:59.290235+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20040101_20041231_b985a9e3fda3.json",
+        "sidecar": "NASA_POWER_regional_20040101_20041231_b985a9e3fda3.sidecar.json",
+        "sha256": "b985a9e3fda3313956664b07ee4cb8892fe3f2253cd3647bcb3765d636d5ad1a",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20040101",
+          "end": "20041231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:00.479331+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20050101_20051231_ab061aae0407.json",
+        "sidecar": "NASA_POWER_regional_20050101_20051231_ab061aae0407.sidecar.json",
+        "sha256": "ab061aae040776ff1ec97b4038ef14e6cc09baaee325a397903eb7e6d6945922",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20050101",
+          "end": "20051231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:02.804549+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20060101_20061231_e84fcec60562.json",
+        "sidecar": "NASA_POWER_regional_20060101_20061231_e84fcec60562.sidecar.json",
+        "sha256": "e84fcec6056251c4ab67abd912e0503d356235713b75a408f6c66d3b335e4915",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20060101",
+          "end": "20061231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:05.061785+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20070101_20071231_f6308608c144.json",
+        "sidecar": "NASA_POWER_regional_20070101_20071231_f6308608c144.sidecar.json",
+        "sha256": "f6308608c14413412d9bb5ed27b8cbf7af651d747541acd8a3e3044fab6657b6",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20070101",
+          "end": "20071231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:07.358743+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20080101_20081231_9eacc9e50c92.json",
+        "sidecar": "NASA_POWER_regional_20080101_20081231_9eacc9e50c92.sidecar.json",
+        "sha256": "9eacc9e50c92e143be00967e26a146c5117f96648db2129c08daaaf77b67312f",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20080101",
+          "end": "20081231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:09.723005+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20090101_20091231_3f4b67690995.json",
+        "sidecar": "NASA_POWER_regional_20090101_20091231_3f4b67690995.sidecar.json",
+        "sha256": "3f4b67690995a72e8dc7bd7ea1e0724f7298f474b9baf7d69885b557a486c549",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20090101",
+          "end": "20091231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:12.026936+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20100101_20101231_42713040cb50.json",
+        "sidecar": "NASA_POWER_regional_20100101_20101231_42713040cb50.sidecar.json",
+        "sha256": "42713040cb50be5d89b4a705f5d29010a1a9c0c64a5e7b7299191f1ba5552706",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20100101",
+          "end": "20101231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:14.254573+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20110101_20111231_d14aeec0c245.json",
+        "sidecar": "NASA_POWER_regional_20110101_20111231_d14aeec0c245.sidecar.json",
+        "sha256": "d14aeec0c245d7daa3b5d8669eea1708d197f9218692a16bf8baa78d0aae85a1",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20110101",
+          "end": "20111231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:16.520078+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20120101_20121231_f5d06f1cdf9a.json",
+        "sidecar": "NASA_POWER_regional_20120101_20121231_f5d06f1cdf9a.sidecar.json",
+        "sha256": "f5d06f1cdf9aa18790a15eefd983d6dab83f9c1138c4652e748498496cdbc851",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20120101",
+          "end": "20121231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:18.771957+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20130101_20131231_5396e0c7d27b.json",
+        "sidecar": "NASA_POWER_regional_20130101_20131231_5396e0c7d27b.sidecar.json",
+        "sha256": "5396e0c7d27b7d9f1470c8cda63796aa71f02ef176d2572c82ea0949f6c32e77",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20130101",
+          "end": "20131231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:20.600148+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20140101_20141231_648b435154c3.json",
+        "sidecar": "NASA_POWER_regional_20140101_20141231_648b435154c3.sidecar.json",
+        "sha256": "648b435154c362c576a79d9dabe1eb8ab7eb57481441efa87aa1a14481c7492e",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20140101",
+          "end": "20141231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:22.989677+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20150101_20151231_6c78b2d486f8.json",
+        "sidecar": "NASA_POWER_regional_20150101_20151231_6c78b2d486f8.sidecar.json",
+        "sha256": "6c78b2d486f8570aee61b130557b54c0141542c2cff1dc38095898b2fb656a02",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20150101",
+          "end": "20151231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:25.259380+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20160101_20161231_b75a516cdd79.json",
+        "sidecar": "NASA_POWER_regional_20160101_20161231_b75a516cdd79.sidecar.json",
+        "sha256": "b75a516cdd79cf16a07fd59892e16309e2bbec477654f3beed287b0a677faa77",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20160101",
+          "end": "20161231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:26.456115+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20170101_20171231_574c03226d5f.json",
+        "sidecar": "NASA_POWER_regional_20170101_20171231_574c03226d5f.sidecar.json",
+        "sha256": "574c03226d5f544c942afaa3c8546487a0c3103c2ed17167d6bf62d0587ab784",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20170101",
+          "end": "20171231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:28.782996+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20180101_20181231_aeabbab4d583.json",
+        "sidecar": "NASA_POWER_regional_20180101_20181231_aeabbab4d583.sidecar.json",
+        "sha256": "aeabbab4d5836eeb029f7eaa33f3701d0b0d26d1cbcfe7aeafceb826cd18f01b",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20180101",
+          "end": "20181231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:30.997476+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20190101_20191231_2c94a61aef17.json",
+        "sidecar": "NASA_POWER_regional_20190101_20191231_2c94a61aef17.sidecar.json",
+        "sha256": "2c94a61aef1760bb5e3012334a54a99a489a0b8676f9d71f6031fa0013c77aee",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20190101",
+          "end": "20191231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:33.266635+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20200101_20201231_90d8d1448c53.json",
+        "sidecar": "NASA_POWER_regional_20200101_20201231_90d8d1448c53.sidecar.json",
+        "sha256": "90d8d1448c53813280d4232b6836a6b6d9460da6f630d80e6486759cce7ade02",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20200101",
+          "end": "20201231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:35.648232+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20210101_20211231_a8bcd8732778.json",
+        "sidecar": "NASA_POWER_regional_20210101_20211231_a8bcd8732778.sidecar.json",
+        "sha256": "a8bcd873277802b7b83d1ff5bafdbc1a4642473d55f58a10352e2477eded41e5",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20210101",
+          "end": "20211231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:37.867743+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20220101_20221231_23dcdb9f02e6.json",
+        "sidecar": "NASA_POWER_regional_20220101_20221231_23dcdb9f02e6.sidecar.json",
+        "sha256": "23dcdb9f02e62c3a3f38431778c1c0e2fe351774e47abe3113c2647be8f74c05",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20220101",
+          "end": "20221231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:39.010581+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20230101_20231231_ad832492e5c5.json",
+        "sidecar": "NASA_POWER_regional_20230101_20231231_ad832492e5c5.sidecar.json",
+        "sha256": "ad832492e5c502e52d8279a544c8dd45dbc69ee1bbafb6321e94029943667ab3",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20230101",
+          "end": "20231231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:40.160903+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20240101_20241231_cd6c7ce6cb27.json",
+        "sidecar": "NASA_POWER_regional_20240101_20241231_cd6c7ce6cb27.sidecar.json",
+        "sha256": "cd6c7ce6cb27396cf972f5cd9b48bad6cd852408b198fb01f191762813b1193b",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20240101",
+          "end": "20241231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:41.182212+00:00"
+      },
+      {
+        "file": "NASA_POWER_regional_20250101_20251231_3b942207057d.json",
+        "sidecar": "NASA_POWER_regional_20250101_20251231_3b942207057d.sidecar.json",
+        "sha256": "3b942207057d818389422df0e36185d620321fd32f8f06383ace761b6fa5f22b",
+        "request_params": {
+          "parameters": "PRECTOTCORR",
+          "community": "AG",
+          "longitude-min": "75.927060",
+          "latitude-min": "18.680730",
+          "longitude-max": "80.899780",
+          "latitude-max": "21.769500",
+          "start": "20250101",
+          "end": "20251231",
+          "format": "JSON",
+          "time-standard": "UTC"
+        },
+        "accessed_at": "2026-11-14T15:46:43.477682+00:00"
+      }
+    ],
+    "code_git_sha": null,
+    "request_params": {
+      "start": "20010101",
+      "end": "20251231",
+      "chunks": 25
+    },
+    "raw_units": "mm/day",
+    "temporal_completeness_threshold": 0.8,
+    "spatial_method": "grid-cell center covered by full polygon; cosine(latitude) weighted mean",
+    "grid_cells_in_region": 26,
+    "extreme_observation_count": 0,
+    "data_quality_warnings": [],
+    "source": "NASA POWER Daily Regional API, source MERRA-2"
+  },
+  "limitations": [
+    "NASA POWER's approximately 0.5 degree by 0.625 degree grid is regional scale and cannot support district-level conclusions.",
+    "Spatial averages use grid-cell centers covered by the full polygon with cosine(latitude) weights; fractional cell overlap is not computed.",
+    "Annual and JJAS values are sums of valid daily precipitation rates; periods below 80% daily completeness remain null.",
+    "The Mann-Kendall p-value is not modified for autocorrelation; inspect the reported lag-1 diagnostic.",
+    "A statistical trend does not establish cause or predict future conditions."
+  ],
+  "attribution": [
+    "NASA POWER Daily Regional API; source MERRA-2. Data access date and raw checksum are included in provenance.",
+    "Vidarbha district boundaries: geoBoundaries gbOpen India ADM2, ODbL 1.0; see boundaries/boundary-manifest.json."
+  ]
+}

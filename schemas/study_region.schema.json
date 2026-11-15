@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://terrascan.example/schemas/study_region.schema.json",
+  "title": "Study region",
+  "type": "object",
+  "required": ["region_id", "boundary_version", "name", "level"],
+  "properties": {
+    "region_id": { "type": "string", "pattern": "^IN-MH-VID(?:-[A-Z]{3})?$" },
+    "boundary_version": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "level": { "enum": ["region", "district"] },
+    "geometry": { "type": "object", "description": "Backend-only geometry. Never accepted from browser analysis requests." }
+  },
+  "additionalProperties": false
+}

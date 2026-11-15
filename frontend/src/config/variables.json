@@ -1,0 +1,120 @@
+{
+  "schema_version": "0.1",
+  "note": "'verified': true = name and units confirmed in a real NASA POWER monthly response (API v2.10.0). 'verified': false = a documented POWER parameter that has NOT yet been checked by the team; the app reads its units from the live response and labels it 'units confirmed on fetch'. Run the check before relying on it.",
+  "variables": [
+    {
+      "id": "T2M",
+      "short_name": "Air temperature",
+      "power_long_name": "Temperature at 2 Meters",
+      "category": "Atmosphere",
+      "definition": "How hot or cold the air is, measured about 2 metres above the ground, the height of a weather-station thermometer.",
+      "why_it_matters": "Temperature affects crops, water use, energy demand and how hot people feel.",
+      "caveat": "This is NASA's MERRA-2 model estimate for a grid cell about 50 km across, not a thermometer reading. The heat of a single city is too small to show up.",
+      "units_monthly": "°C",
+      "units_aggregated": "°C",
+      "aggregation_rule": "mean",
+      "suggested_view": {
+        "kind": "annual"
+      },
+      "verified": true
+    },
+    {
+      "id": "PRECTOTCORR",
+      "short_name": "Rainfall",
+      "power_long_name": "Precipitation Corrected",
+      "category": "Water",
+      "definition": "How much rain (and other precipitation) reaches the ground, in millimetres of water. POWER gives an average per day for each month; TERRASCAN turns it into monthly, seasonal and yearly totals.",
+      "why_it_matters": "Rain fills rivers, soil and reservoirs and decides how well crops grow, so more or less of it matters to farms and cities.",
+      "caveat": "A model estimate that has been corrected using observations, averaged over a grid cell about 50 km across. Rainfall changes a lot from year to year, so short periods can mislead.",
+      "units_monthly": "mm/day",
+      "units_aggregated": "mm",
+      "aggregation_rule": "sum_of_daily_rate",
+      "suggested_view": {
+        "kind": "season",
+        "seasonId": "monsoon"
+      },
+      "verified": true
+    },
+    {
+      "id": "RH2M",
+      "short_name": "Relative humidity",
+      "power_long_name": "Relative Humidity at 2 Meters",
+      "category": "Atmosphere",
+      "definition": "How full of water vapour the air is, as a percentage of the most it could hold at that temperature. 100% means the air is saturated.",
+      "why_it_matters": "Humid air feels hotter and slows the drying of soil and crops, and it is part of how clouds and rain form.",
+      "caveat": "Relative humidity depends on temperature: warmer air can hold more water, so the percentage can fall even if the amount of water vapour stays the same. Model estimate for a grid cell about 50 km across.",
+      "units_monthly": "%",
+      "units_aggregated": "%",
+      "aggregation_rule": "mean",
+      "suggested_view": {
+        "kind": "annual"
+      },
+      "verified": true
+    },
+    {
+      "id": "T2M_MAX",
+      "short_name": "Hottest daytime temperature",
+      "power_long_name": "Temperature at 2 Meters Maximum",
+      "category": "Atmosphere",
+      "definition": "The average of each day's highest air temperature, about 2 metres above the ground.",
+      "why_it_matters": "Daytime peaks drive heat stress for people, crops and livestock, and the demand for cooling.",
+      "caveat": "A model estimate for a grid cell about 50 km across, not a thermometer reading. Daily peaks in a city can be higher than this smooth estimate.",
+      "units_monthly": "°C",
+      "units_aggregated": "°C",
+      "aggregation_rule": "mean",
+      "suggested_view": {
+        "kind": "season",
+        "seasonId": "premonsoon"
+      },
+      "verified": false
+    },
+    {
+      "id": "T2M_MIN",
+      "short_name": "Coolest night temperature",
+      "power_long_name": "Temperature at 2 Meters Minimum",
+      "category": "Atmosphere",
+      "definition": "The average of each day's lowest air temperature, about 2 metres above the ground, usually just before sunrise.",
+      "why_it_matters": "Warmer nights give people and crops less time to cool down, and can reveal long-term warming.",
+      "caveat": "A model estimate for a grid cell about 50 km across. Local cold pockets and city heat are too small to appear.",
+      "units_monthly": "°C",
+      "units_aggregated": "°C",
+      "aggregation_rule": "mean",
+      "suggested_view": {
+        "kind": "annual"
+      },
+      "verified": false
+    },
+    {
+      "id": "WS10M",
+      "short_name": "Wind speed",
+      "power_long_name": "Wind Speed at 10 Meters",
+      "category": "Atmosphere",
+      "definition": "How fast the wind blows, measured about 10 metres above the ground.",
+      "why_it_matters": "Wind moves moisture and heat around, dries soil, and decides how useful wind power can be.",
+      "caveat": "A smooth model estimate for a grid cell about 50 km across. Local gusts, buildings and hills are not represented.",
+      "units_monthly": "m/s",
+      "units_aggregated": "m/s",
+      "aggregation_rule": "mean",
+      "suggested_view": {
+        "kind": "annual"
+      },
+      "verified": false
+    },
+    {
+      "id": "ALLSKY_SFC_SW_DWN",
+      "short_name": "Sunshine reaching the ground",
+      "power_long_name": "All Sky Surface Shortwave Downward Irradiance",
+      "category": "Energy",
+      "definition": "How much of the Sun's energy lands on each square metre of ground, after clouds and haze have taken their share.",
+      "why_it_matters": "It powers plant growth and solar panels, and changes with cloud cover and air pollution.",
+      "caveat": "Estimated from satellite cloud data and a model for a grid cell about 50 km across. Treat small changes with caution.",
+      "units_monthly": "kWh/m²/day",
+      "units_aggregated": "kWh/m²/day",
+      "aggregation_rule": "mean",
+      "suggested_view": {
+        "kind": "annual"
+      },
+      "verified": false
+    }
+  ]
+}

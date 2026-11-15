@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://terrascan.example/schemas/investigation_request.schema.json",
+  "title": "Investigation request",
+  "type": "object",
+  "required": ["region_id", "boundary_version", "dataset_id", "variable", "start", "end"],
+  "properties": {
+    "region_id": { "type": "string", "pattern": "^IN-MH-VID(?:-[A-Z]{3})?$" },
+    "boundary_version": { "type": "string", "minLength": 1 },
+    "dataset_id": { "type": "string", "minLength": 1 },
+    "variable": { "type": "string", "minLength": 1 },
+    "start": { "type": "string", "format": "date" },
+    "end": { "type": "string", "format": "date" },
+    "aggregation": { "enum": ["annual_total", "jjas_total"], "default": "annual_total" }
+  },
+  "additionalProperties": false
+}

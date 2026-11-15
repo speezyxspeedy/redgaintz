@@ -1,0 +1,34 @@
+{
+  "boundary_version": "geoBoundaries-IND-ADM2-76128533-2023-01-19",
+  "default_region_id": "IN-MH-VID",
+  "regions": [
+    {
+      "region_id": "IN-MH-VID",
+      "name": "Vidarbha",
+      "parent": "Maharashtra",
+      "level": "region",
+      "boundary_file": "boundaries/IN-MH-VID.full.geojson",
+      "display_file": "boundaries/IN-MH-VID.display.geojson",
+      "districts": [
+        { "region_id": "IN-MH-VID-AKO", "name": "Akola", "source_name": "Akola", "division": "Amravati" },
+        { "region_id": "IN-MH-VID-AMR", "name": "Amravati", "source_name": "Amravati", "division": "Amravati" },
+        { "region_id": "IN-MH-VID-BUL", "name": "Buldhana", "source_name": "Buldana", "division": "Amravati" },
+        { "region_id": "IN-MH-VID-WAS", "name": "Washim", "source_name": "Washim", "division": "Amravati" },
+        { "region_id": "IN-MH-VID-YAV", "name": "Yavatmal", "source_name": "Yavatmal", "division": "Amravati" },
+        { "region_id": "IN-MH-VID-BHA", "name": "Bhandara", "source_name": "Bhandara", "division": "Nagpur" },
+        { "region_id": "IN-MH-VID-CHA", "name": "Chandrapur", "source_name": "Chandrapur", "division": "Nagpur" },
+        { "region_id": "IN-MH-VID-GAD", "name": "Gadchiroli", "source_name": "Gadchiroli", "division": "Nagpur" },
+        { "region_id": "IN-MH-VID-GON", "name": "Gondia", "source_name": "Gondiya", "division": "Nagpur" },
+        { "region_id": "IN-MH-VID-NAG", "name": "Nagpur", "source_name": "Nagpur", "division": "Nagpur" },
+        { "region_id": "IN-MH-VID-WAR", "name": "Wardha", "source_name": "Wardha", "division": "Nagpur" }
+      ],
+      "presets": [
+        { "id": "india", "name": "India", "center": [78.9629, 20.5937], "height_m": 5500000 },
+        { "id": "maharashtra", "name": "Maharashtra", "center": [75.7, 19.7], "height_m": 1800000 },
+        { "id": "vidarbha", "name": "Vidarbha", "center": [78.25, 20.5], "height_m": 950000 }
+      ]
+    }
+  ],
+  "district_analysis_note": "NASA POWER grid is too coarse for district-level conclusions. District boundaries are display/selection only for the supported dataset.",
+  "official_district_list_status": "[VERIFY] The initial list follows the supplied project brief; geoBoundaries feature-name matches are recorded in docs/data/boundary-manifest.json."
+}

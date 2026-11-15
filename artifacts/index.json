@@ -1,0 +1,28 @@
+{
+  "runs": [
+    {
+      "run_id": "run-20261114-bf89c05f2682",
+      "result": "run-20261114-bf89c05f2682/result.json",
+      "region_id": "IN-MH-VID",
+      "boundary_version": "geoBoundaries-IND-ADM2-76128533-2023-01-19",
+      "dataset_id": "NASA_POWER_MERRA2_PRECTOTCORR_DAILY",
+      "access_date": "2026-11-14T15:46:43.477682+00:00",
+      "data_origin": "live",
+      "start": "2001-01-01",
+      "end": "2025-12-31",
+      "aggregation": "annual_total"
+    },
+    {
+      "run_id": "run-20261114-575a5bb106a1",
+      "result": "run-20261114-575a5bb106a1/result.json",
+      "region_id": "IN-MH-VID",
+      "boundary_version": "geoBoundaries-IND-ADM2-76128533-2023-01-19",
+      "dataset_id": "NASA_POWER_MERRA2_PRECTOTCORR_DAILY",
+      "access_date": "2026-11-14T15:43:59.803795+00:00",
+      "data_origin": "live",
+      "start": "2001-01-01",
+      "end": "2024-12-31",
+      "aggregation": "annual_total"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://terrascan.example/schemas/error.schema.json",
+  "title": "API error",
+  "type": "object",
+  "required": ["error", "message"],
+  "properties": {
+    "error": { "type": "string", "minLength": 1 },
+    "message": { "type": "string", "minLength": 1 },
+    "details": { "type": "object" }
+  },
+  "additionalProperties": false
+}

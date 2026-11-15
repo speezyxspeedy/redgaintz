@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://terrascan.example/schemas/analysis_result.schema.json",
+  "title": "Analysis result",
+  "type": "object",
+  "required": ["run_id", "region_id", "boundary_version", "dataset_id", "dataset_version", "variable", "units", "aggregation", "observations", "trend", "provenance", "limitations", "attribution"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "region_id": { "type": "string", "pattern": "^IN-MH-VID$" },
+    "boundary_version": { "type": "string" },
+    "dataset_id": { "type": "string" },
+    "dataset_version": { "type": "string" },
+    "variable": { "type": "string" },
+    "units": { "enum": ["mm/year", "mm"] },
+    "aggregation": { "enum": ["annual_total", "jjas_total"] },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["time", "value", "valid_fraction", "cell_count"],
+        "properties": {
+          "time": { "type": "integer" },
+          "value": { "type": ["number", "null"] },
+          "valid_fraction": { "type": "number", "minimum": 0, "maximum": 1 },
+          "cell_count": { "type": "integer", "minimum": 0 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "trend": {
+      "type": ["object", "null"],
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": ["status", "sample_count", "required_observations", "message"]
+        },
+        {
+          "type": "object",
+          "required": [
+            "method", "sample_count", "alpha", "mk_score", "p_value",
+            "significant", "direction", "sen_slope", "sen_slope_ci95",
+            "ols_slope", "lag1_autocorrelation", "lag1_autocorrelation_flag",
+            "total_change", "observed_mean", "missing_years_excluded"
+          ]
+        }
+      ],
+      "properties": {
+        "status": { "enum": ["insufficient_data"] },
+        "method": { "type": "string" },
+        "sample_count": { "type": "integer", "minimum": 0 },
+        "required_observations": { "type": "integer", "minimum": 1 },
+        "alpha": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+        "mk_score": { "type": "integer" },
+        "mk_z": { "type": "number" },
+        "p_value": { "type": "number", "minimum": 0, "maximum": 1 },
+        "significant": { "type": "boolean" },
+        "direction": { "enum": ["increasing", "decreasing", "no_significant_trend"] },
+        "sen_slope": { "type": "number" },
+        "sen_slope_ci95": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "sen_intercept": { "type": "number" },
+        "ols_slope": { "type": "number" },
+        "ols_p_value": { "type": "number", "minimum": 0, "maximum": 1 },
+        "lag1_autocorrelation": { "type": ["number", "null"], "minimum": -1, "maximum": 1 },
+        "lag1_autocorrelation_threshold": { "type": "number", "minimum": 0 },
+        "lag1_autocorrelation_flag": { "type": "boolean" },
+        "span_years": { "type": "number", "minimum": 0 },
+        "total_change": { "type": "number" },
+        "observed_mean": { "type": "number" },
+        "percent_change_of_mean": { "type": ["number", "null"] },
+        "missing_years_excluded": { "type": "integer", "minimum": 0 },
+        "interpretation": { "type": "string" },
+        "message": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "run_id", "dataset_id", "dataset_version", "access_date", "data_origin",
+        "raw_sha256", "raw_sha256_algorithm", "raw_sources", "code_git_sha",
+        "request_params"
+      ],
+      "properties": {
+        "run_id": { "type": "string", "minLength": 1 },
+        "dataset_id": { "type": "string", "minLength": 1 },
+        "dataset_version": { "type": "string", "minLength": 1 },
+        "access_date": { "type": "string", "format": "date-time" },
+        "data_origin": { "enum": ["live", "cached"] },
+        "raw_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "raw_sha256_algorithm": { "type": "string", "minLength": 1 },
+        "raw_sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["file", "sidecar", "sha256", "request_params", "accessed_at"],
+            "properties": {
+              "file": { "type": "string", "minLength": 1 },
+              "sidecar": { "type": "string", "minLength": 1 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "request_params": { "type": "object" },
+              "accessed_at": { "type": "string", "format": "date-time" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "code_git_sha": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{40,64}$"
+        },
+        "request_params": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "attribution": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}
