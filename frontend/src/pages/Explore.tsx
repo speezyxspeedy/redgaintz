@@ -2,6 +2,7 @@ import { Compass, Crosshair, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Cartesian3, Cartographic, Color, GeoJsonDataSource, ImageryLayer, Math as CMath, SceneMode, ScreenSpaceEventHandler, ScreenSpaceEventType, UrlTemplateImageryProvider, Viewer } from "cesium";
 import { go } from "../components";
+import type { Language } from "../i18n";
 
 const ESRI = "https://services.arcgisonline.com/ArcGIS/rest/services";
 const GIBS = "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best";
@@ -23,7 +24,7 @@ type Mode = "globe" | "tilt" | "map";
 const isoDaysAgo = (n: number) => new Date(Date.now() - n * 864e5).toISOString().slice(0, 10);
 const prov = (url: string, max: number, credit: string) => new UrlTemplateImageryProvider({ url, maximumLevel: max, credit });
 
-export default function Explore() {
+export default function Explore({ language: _language = "en" }: { language?: Language }) {
   const box = useRef<HTMLDivElement>(null);
   const viewer = useRef<Viewer | null>(null);
   const baseLayer = useRef<ImageryLayer | null>(null);
@@ -90,7 +91,11 @@ export default function Explore() {
     e.preventDefault();
     if (!q.trim()) return;
     try {
-      const r = await (await fetch(`https://geocoding-api.open-meteo.com/v1/search?count=1&name=${encodeURIComponent(q.trim())}`)).json();
+      const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?count=1&name=${encodeURIComponent(q.trim())}`);
+      if (!response.ok) throw new Error(`Place search failed (${response.status}).`);
+      const type = response.headers.get("content-type") ?? "";
+      if (!type.includes("json")) throw new Error("Place search returned an unexpected response.");
+      const r = await response.json() as { results?: Array<{ latitude: number; longitude: number }> };
       const hit = r.results?.[0];
       if (!hit) { setMsg(`No place called "${q}". Try a city or district name.`); return; }
       setMsg(""); setPick({ lat: hit.latitude, lon: hit.longitude }); fly(hit.longitude, hit.latitude, 4e5);

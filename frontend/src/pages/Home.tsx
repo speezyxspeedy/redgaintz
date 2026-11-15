@@ -7,8 +7,10 @@ import { bundledSnapshot } from "../data";
 import { analyse, viewToParam, withPrettyUnits } from "../lib/analysis";
 import { getVariable } from "../lib/variables";
 import { DEMOS, accentFor, findPlace } from "../theme";
+import { getCopy, type Language } from "../i18n";
 
-export default function Home() {
+export default function Home({ language = "en" }: { language?: Language }) {
+  const copy = getCopy(language);
   const preview = useMemo(() => {
     const snap = bundledSnapshot();
     const card = getVariable("PRECTOTCORR");
@@ -21,24 +23,24 @@ export default function Home() {
       <section className="hero3d">
         <Hero3D />
         <div className="hero3d-copy">
-          <h1>Is this place really changing, or is it just a wet year?</h1>
-          <p className="lede">Pick a spot on Earth. TERRASCAN pulls 45 years of NASA data for it and tests, with real statistics, whether rain, heat, humidity or sunshine is shifting. Start with Vidarbha, in central India.</p>
+          <h1>{copy.site.homeHeadline}</h1>
+          <p className="lede">{copy.site.homeIntro}</p>
           <div className="cta-row">
-            <button className="btn btn--primary btn--lg" onClick={() => go("/investigate")}><Compass size={18} aria-hidden="true" /> Investigate a place</button>
-            <button className="btn btn--lg" onClick={() => go("/explore")}>Explore the globe</button>
+            <button className="btn btn--primary btn--lg" onClick={() => go("/investigate")}><Compass size={18} aria-hidden="true" /> {copy.site.investigate}</button>
+            <button className="btn btn--lg" onClick={() => go("/explore")}>{copy.site.explore}</button>
           </div>
           <p className="hero3d-src">NASA POWER, MERRA-2, 1981 to {new Date().getFullYear() - 1}. Drag the Earth to turn it.</p>
         </div>
       </section>
 
       <section className="band atlas-cta" aria-labelledby="atlasq">
-        <h2 id="atlasq">Which of Vidarbha's 11 districts are really changing?</h2>
-        <p>One click runs the same significance test on every district and maps the result, with the districts that show no trend left honestly hatched.</p>
-        <button className="btn btn--primary btn--lg" onClick={() => go("/atlas")}>Open the Vidarbha atlas</button>
+        <h2 id="atlasq">{copy.site.atlasTitle}</h2>
+        <p>{copy.site.atlasText}</p>
+        <button className="btn btn--primary btn--lg" onClick={() => go("/atlas")}>{copy.site.atlasButton}</button>
       </section>
 
       <section className="band preview-band" aria-labelledby="live">
-        <h2 id="live">A finished investigation</h2>
+        <h2 id="live">{copy.site.finished}</h2>
         <div className="hero-card" style={{ ["--a" as string]: ac.a, ["--b" as string]: ac.b }}>
           <div className="hero-card-head">
             <span className="var-icon"><VarIcon id="PRECTOTCORR" /></span>
@@ -56,7 +58,7 @@ export default function Home() {
       </section>
 
       <section className="band" aria-labelledby="how">
-        <h2 id="how">How a detective works</h2>
+        <h2 id="how">{copy.site.how}</h2>
         <ol className="how">
           {[
             ["Choose", "Pick a variable such as rainfall, temperature, humidity or sunshine. Each comes with a plain definition.", Eye],
@@ -79,7 +81,7 @@ export default function Home() {
 
       <section className="band" aria-labelledby="demos">
         <div className="band-head">
-          <h2 id="demos">Try a demo investigation</h2>
+          <h2 id="demos">{copy.site.demos}</h2>
           <p>Each demo only sets the controls. The result is whatever the data shows, significant or not.</p>
         </div>
         <div className="demo-grid">
@@ -99,7 +101,7 @@ export default function Home() {
       </section>
 
       <section className="band principles" aria-labelledby="honest">
-        <h2 id="honest">Honest by design</h2>
+        <h2 id="honest">{copy.site.honest}</h2>
         <div className="principle-grid">
           <div><h3>Nothing is invented</h3><p>Every number comes from NASA POWER. Missing months are skipped, never filled in or smoothed.</p></div>
           <div><h3>“No trend” is a result</h3><p>Non-significant findings are shown as plainly as significant ones, with the reason.</p></div>

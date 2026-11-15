@@ -1,6 +1,7 @@
 import { Bot, ExternalLink, Database, FlaskConical, ShieldAlert } from "lucide-react";
 import { Refs } from "../Lineage";
 import { VARIABLES } from "../lib/variables";
+import { getCopy, type Language } from "../i18n";
 
 type Status = "Live" | "Link" | "Reference";
 const SOURCES: [string, string, string, string, Status][] = [
@@ -19,30 +20,31 @@ const SOURCES: [string, string, string, string, Status][] = [
   ["Trend-test and significance guides", "https://www.statsig.com/perspectives/a-comprehensive-guide-to-statistical-significance", "Plain explanations of trend tests and p-values", "Method reference", "Reference"],
 ];
 
-export default function About() {
+export default function About({ language = "en" }: { language?: Language }) {
+  const copy = getCopy(language);
   return (
     <div className="page">
       <header className="page-head">
-        <span className="eyebrow"><Database size={14} aria-hidden="true" /> Data and method</span>
-        <h1>What is under the hood</h1>
-        <p className="lede">TERRASCAN runs entirely in your browser. There is no server to keep alive: it asks NASA for the data and does the statistics on your device.</p>
+        <span className="eyebrow"><Database size={14} aria-hidden="true" /> {copy.site.aboutEyebrow}</span>
+        <h1>{copy.site.aboutTitle}</h1>
+        <p className="lede">{copy.site.aboutIntro}</p>
       </header>
 
       <section className="band two-col">
         <div className="card">
-          <h3><Database size={18} aria-hidden="true" /> Data</h3>
+          <h3><Database size={18} aria-hidden="true" /> {copy.site.data}</h3>
           <p>NASA POWER monthly point data (API v2.10.0), built mostly from the MERRA-2 reanalysis, 1981 to the last complete year. Each answer describes one grid cell about 50 km wide. Requests are cached in your browser for seven days and labelled <em>Live</em> or <em>Cached</em>.</p>
           <p>Nagpur also has a saved snapshot of a real NASA POWER response so the app still works without a connection.</p>
         </div>
         <div className="card">
-          <h3><FlaskConical size={18} aria-hidden="true" /> Statistics</h3>
+          <h3><FlaskConical size={18} aria-hidden="true" /> {copy.site.statistics}</h3>
           <p>Yearly values are built from the monthly values: rainfall adds up daily rates over the days in each month, everything else is a day-weighted average. Years with any missing month are skipped.</p>
           <p>Trend: Mann–Kendall (tie-corrected) for significance, Sen's slope with a 95% range for size, ordinary least squares and a lag-1 autocorrelation check as cross-checks. The TypeScript code is tested against the project's Python implementation.</p>
         </div>
       </section>
 
       <section className="band" aria-labelledby="src">
-        <h2 id="src">NASA data and partner resources</h2>
+        <h2 id="src">{copy.site.sources}</h2>
         <p className="hint">Status says exactly what TERRASCAN does with each one. Nothing marked Reference or Cross-check is used in a result.</p>
         <div className="table-wrap">
           <table className="table src-table">
@@ -61,25 +63,25 @@ export default function About() {
 
       <section className="band two-col" aria-labelledby="priv">
         <div className="card">
-          <h3 id="priv"><ShieldAlert size={18} aria-hidden="true" /> Privacy</h3>
+          <h3 id="priv"><ShieldAlert size={18} aria-hidden="true" /> {copy.site.privacy}</h3>
           <p>There are no accounts and no analytics. The coordinates you choose go to NASA POWER, and place searches go to the Open-Meteo geocoder. Map tiles come from NASA GIBS and Esri.</p>
           <p>The assistant works offline by default. If you add your own Gemini key it is kept for this browser tab only, and your questions then go to Google.</p>
         </div>
         <div className="card">
-          <h3><FlaskConical size={18} aria-hidden="true" /> Limits you should know</h3>
+          <h3><FlaskConical size={18} aria-hidden="true" /> {copy.site.limits}</h3>
           <p>POWER describes a grid cell about 50 km wide, so it cannot see a city, a lake or a single farm. A significant trend is not a cause, and "no significant trend" is a valid result.</p>
           <p>Probabilities assume future years scatter around the fitted line as past years did. They are not weather forecasts.</p>
         </div>
       </section>
 
       <section className="band" aria-labelledby="refs">
-        <h2 id="refs">References</h2>
+        <h2 id="refs">{copy.site.references}</h2>
         <p className="hint">Numbers in square brackets across the app point to these sources.</p>
         <Refs ids={[1, 2, 3, 4, 5, 6, 7, 8]} />
       </section>
 
       <section className="band" aria-labelledby="vars">
-        <h2 id="vars">Variables</h2>
+        <h2 id="vars">{copy.site.variables}</h2>
         <div className="table-wrap">
           <table className="table table--vars">
             <thead><tr><th>Variable</th><th>POWER name</th><th>Yearly value</th><th>Status</th></tr></thead>
@@ -109,7 +111,7 @@ export default function About() {
           </ul>
         </div>
         <div className="card">
-          <h3><Bot size={18} aria-hidden="true" /> AI use</h3>
+          <h3><Bot size={18} aria-hidden="true" /> {copy.site.aiUse}</h3>
           <p>The numbers, charts and verdicts are produced by deterministic, tested code. They are not written by an AI.</p>
           <p>The interface redesign was written with Claude (Anthropic) through Claude Code. The optional chat assistant calls Google Gemini only if a visitor types in their own key, which stays in their browser, and it is told to explain only the numbers shown.</p>
         </div>

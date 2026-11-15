@@ -22,6 +22,17 @@ NASA Space Apps Challenge 2026 · NASA Space Apps Nagpur. Add the human team mem
 
 Only the NASA POWER `PRECTOTCORR` adapter is enabled. Earthdata products remain disabled until their official collection, variable, units, and access details are verified. No sample or synthetic values are presented as science results.
 
+```mermaid
+flowchart LR
+  User --> React["React + Vite site"]
+  React --> Power["NASA POWER API"]
+  React --> Stats["Tested browser statistics"]
+  Stats --> Result["Metrics, chart and provenance"]
+  Result --> Helper["Optional Gemini result helper"]
+```
+
+The Gemini helper receives the selected result JSON and catalogue definitions only. It explains the computed values; it does not calculate or invent science results.
+
 ## Live Demo & Screenshots
 
 Live URL placeholder: `https://<github-user>.github.io/<repository>/`. Static GitHub Pages deployment is configured in `.github/workflows/pages.yml`; replace the placeholder only after a repository is connected and Pages deployment succeeds. A real NASA POWER run for 2001–2025 is bundled under `artifacts/`; the app labels a result loaded from static artifacts as `Cached`.
@@ -51,10 +62,14 @@ make test
 
 Copy `.env.example` to `.env` for optional settings. Keep Earthdata credentials in `.env`, never in `VITE_*` variables. Cesium ion's browser token is public by design; restrict it to the deployed domain and required assets. Offline operation requires a previously generated real result in `artifacts/`.
 
+### Optional Gemini result helper
+
+The app does **not** read a Gemini key from source code, `.env`, Vite variables, or GitHub Actions. To use the helper, open the assistant button in the lower-right corner, choose **Catalogue only**, open its status button, and paste a Google AI Studio Gemini API key into the optional key field. The key stays in this browser session and is sent only to Google when you ask a question. Remove it by clearing the field or closing the browser session. Never commit the key or place it in `.env`.
+
 The bundled result spans 2001–2025; rerun the analysis command if the NASA POWER source or date range changes. Raw daily regional responses and their sidecars are stored in ignored `data/raw/`; each raw input hash and the aggregate checksum are recorded in the run provenance. The workspace is not connected to a Git repository, so the recorded code Git SHA is `null`.
 
 ## AI Usage Disclosure
 
-GitHub Copilot assisted with code scaffolding, tests, documentation, and UI implementation. Human review and real-data verification are required before scientific or competition submission.
+GitHub Copilot assisted with code scaffolding, tests, documentation, multilingual UI copy, P6 QA, P7 README work, and UI implementation. Human review and real-data verification are required before scientific or competition submission. The optional Gemini result helper is user-provided and only explains runtime result JSON.
 
 GitHub Copilot also assisted with the interactive CesiumJS world-map district label plotter (dynamic GeoJSON centroid computation, land markers, hover cursor). Human review confirmed coordinate accuracy against known district capitals.

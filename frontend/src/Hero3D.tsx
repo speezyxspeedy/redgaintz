@@ -51,13 +51,18 @@ export default function Hero3D() {
     // Vidarbha district outlines from the app's own boundary file.
     const outline = new THREE.Group();
     globe.add(outline);
-    fetch(`${import.meta.env.BASE_URL}boundaries/IN-MH-VID.display.geojson`).then((r) => r.json()).then((gj) => {
+    fetch(`${import.meta.env.BASE_URL}boundaries/IN-MH-VID.display.geojson`).then(async (r) => {
+      if (!r.ok) throw new Error(`Boundary request failed (${r.status}).`);
+      const type = r.headers.get("content-type") ?? "";
+      if (!type.includes("json")) throw new Error("Boundary response was not JSON.");
+      return r.json();
+    }).then((gj) => {
       const m = new THREE.LineBasicMaterial({ color: 0xff8a1f });
       for (const f of gj.features ?? []) {
         const polys = f.geometry?.type === "Polygon" ? [f.geometry.coordinates] : f.geometry?.type === "MultiPolygon" ? f.geometry.coordinates : [];
         for (const poly of polys) for (const ring of poly) outline.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring.map(([lo, la]: number[]) => toVec(la, lo, 1.004))), m));
       }
-    }).catch(() => {});
+    }).catch(() => { /* The globe remains usable without boundary lines. */ });
 
     // Pulse on Nagpur.
     const pin = new THREE.Mesh(new THREE.SphereGeometry(0.012, 16, 16), new THREE.MeshBasicMaterial({ color: 0xff8a1f }));

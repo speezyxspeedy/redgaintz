@@ -1,27 +1,34 @@
-import { BookOpen, HelpCircle, Lightbulb } from "lucide-react";
+import { BookOpen, Brain, HelpCircle, Lightbulb } from "lucide-react";
 import { GLOSSARY } from "../theme";
+import { getCopy, type Language } from "../i18n";
 
-export default function Learn() {
+export default function Learn({ language = "en" }: { language?: Language }) {
+  const copy = getCopy(language);
   return (
     <div className="page">
       <header className="page-head">
-        <span className="eyebrow"><BookOpen size={14} aria-hidden="true" /> Learn</span>
-        <h1>The detective's handbook</h1>
-        <p className="lede">Ten ideas that turn a wiggly line into a trustworthy answer. Hover or tap any underlined word inside the app to see these definitions in place.</p>
+        <span className="eyebrow"><BookOpen size={14} aria-hidden="true" /> {copy.learn.eyebrow}</span>
+        <h1>{copy.learn.title}</h1>
+        <p className="lede">{copy.learn.intro} {language === "en" && "Open the glossary below when a word feels new."}</p>
       </header>
+      <aside className="learn-helper card" aria-labelledby="learn-helper-title">
+        <span className="learn-helper-icon"><Brain size={20} aria-hidden="true" /></span>
+        <div>
+          <h2 id="learn-helper-title">{copy.assistant.title}</h2>
+          <p>{copy.assistant.noResult}</p>
+          <ul><li>{copy.assistant.choose}</li><li>{copy.assistant.key}</li></ul>
+        </div>
+      </aside>
 
       <section className="band" aria-labelledby="read">
-        <h2 id="read">How to read a result</h2>
+        <h2 id="read">{copy.learn.readTitle}</h2>
         <div className="read-grid">
-          <div className="read-card"><Lightbulb size={20} aria-hidden="true" /><h3>1. Look at the line</h3><p>Points are yearly values. The white line is the typical change (Sen's slope). The shaded band is the 95% confidence range.</p></div>
-          <div className="read-card"><Lightbulb size={20} aria-hidden="true" /><h3>2. Read the verdict</h3><p>“Significant” means the pattern is too steady to be luck. “Not significant” means the data cannot tell a trend from normal ups and downs.</p></div>
-          <div className="read-card"><Lightbulb size={20} aria-hidden="true" /><h3>3. Ask how big</h3><p>A tiny change can be significant, and a big change can fail the test if years swing wildly. Compare the total change with the average.</p></div>
-          <div className="read-card"><Lightbulb size={20} aria-hidden="true" /><h3>4. Check the warnings</h3><p>Short records, correlated years and disagreement between methods all make a result less certain.</p></div>
+          {copy.learn.cards.map((card) => <div className="read-card" key={card.title}><Lightbulb size={20} aria-hidden="true" /><h3>{card.title}</h3><p>{card.text}</p></div>)}
         </div>
       </section>
 
       <section className="band" aria-labelledby="gloss">
-        <h2 id="gloss">Glossary</h2>
+        <h2 id="gloss">{copy.learn.glossary}</h2>
         <dl className="gloss">
           {GLOSSARY.map((g) => (
             <div key={g.id} className="gloss-item">

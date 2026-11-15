@@ -13,14 +13,17 @@ import { fmt, fmtP } from "../lib/verdict";
 import { VARIABLES, getVariable, type VariableCard } from "../lib/variables";
 import { scanTrends, type ScannerResult } from "../lib/scanner";
 import { enumerateRobustnessWindows, robustnessSummary, type RobustnessWindow } from "../lib/robustness";
+import { cellExtent, fetchRegionalCellTrends, type RegionalTrendResult } from "../lib/regional";
 import { ALL_PLACES, DEMOS, DISTRICT_PLACES, VIDARBHA_PLACE, WORLD_PLACES, accentFor, customPlace, findPlace, type Demo, type Place } from "../theme";
 import type { AnalysisResult } from "../types";
+import { getCopy, type Language } from "../i18n";
 
 const Globe = lazy(() => import("../Globe"));
 
 type ChartTab = "trend" | "bars" | "cycle" | "prob";
 
 interface Props {
+  language?: Language;
   params: URLSearchParams;
   onResult: (r: AnalysisResult | null) => void;
 }
@@ -32,7 +35,43 @@ function placeFromParams(p: URLSearchParams): Place {
     const lon = Number(p.get("lon"));
     if (Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180) return customPlace(lat, lon);
   }
+
   return findPlace(id) ?? findPlace("IN-MH-VID-NAG")!;
+}
+
+function coordinatesInGeometry(geometry: { coordinates?: unknown }): number[][] {
+  const points: number[][] = [];
+  const walk = (value: unknown) => {
+    if (Array.isArray(value) && value.length >= 2 && typeof value[0] === "number" && typeof value[1] === "number") {
+      points.push([value[0], value[1]]);
+      return;
+    }
+    if (Array.isArray(value)) value.forEach(walk);
+  };
+  walk(geometry.coordinates);
+  return points;
+}
+
+async function boundsForRegion(regionId: string): Promise<{ west: number; south: number; east: number; north: number }> {
+  const response = await fetch(`${import.meta.env.BASE_URL}boundaries/IN-MH-VID.display.geojson`);
+  if (!response.ok) throw new Error("The selected region boundary could not be loaded.");
+  if (!(response.headers.get("content-type") ?? "").toLowerCase().includes("json")) throw new Error("The selected region boundary was not returned as JSON.");
+  let json: { features?: Array<{ properties?: { region_id?: string }; geometry?: { coordinates?: unknown } }> };
+  try {
+    json = await response.json() as { features?: Array<{ properties?: { region_id?: string }; geometry?: { coordinates?: unknown } }> };
+  } catch {
+    throw new Error("The selected region boundary returned invalid JSON.");
+  }
+  const feature = json.features?.find((item) => item.properties?.region_id === regionId) ?? json.features?.find((item) => item.properties?.region_id === "IN-MH-VID");
+  if (!feature?.geometry) throw new Error("No boundary is available for the selected region.");
+  const points = coordinatesInGeometry(feature.geometry);
+  if (!points.length) throw new Error("The selected region boundary has no coordinates.");
+  return {
+    west: Math.min(...points.map((point) => point[0])),
+    south: Math.min(...points.map((point) => point[1])),
+    east: Math.max(...points.map((point) => point[0])),
+    north: Math.max(...points.map((point) => point[1])),
+  };
 }
 
 function toLegacy(a: Analysis, card: VariableCard, place: Place, meta: ReturnType<typeof useSeries>["meta"]): AnalysisResult | null {
@@ -82,7 +121,8 @@ function toLegacy(a: Analysis, card: VariableCard, place: Place, meta: ReturnTyp
   };
 }
 
-export default function Investigate({ params, onResult }: Props) {
+export default function Investigate({ language = "en", params, onResult }: Props) {
+  const copy = getCopy(language);
   const [varId, setVarId] = useState(() => (VARIABLES.some((v) => v.id === params.get("v")) ? params.get("v")! : "PRECTOTCORR"));
   const [place, setPlace] = useState<Place>(() => placeFromParams(params));
   const [view, setView] = useState<ViewSpec>(() => (params.get("view") ? paramToView(params.get("view")) : getVariable("PRECTOTCORR").suggested_view));
@@ -98,6 +138,8 @@ export default function Investigate({ params, onResult }: Props) {
   const [customLon, setCustomLon] = useState(place.kind === "custom" ? String(place.lon) : "");
   const [placeGroup, setPlaceGroup] = useState<"vidarbha" | "world" | "custom">(() => (place.kind === "world" ? "world" : place.kind === "custom" ? "custom" : "vidarbha"));
   const [scanner, setScanner] = useState<{ status: "idle" | "loading" | "ready" | "error"; result: ScannerResult | null; error: string | null }>({ status: "idle", result: null, error: null });
+  const [cellMap, setCellMap] = useState<{ status: "idle" | "loading" | "ready" | "error"; result: RegionalTrendResult | null; error: string | null }>({ status: "idle", result: null, error: null });
+  const [selectedCellId, setSelectedCellId] = useState<string | null>(null);
 
   const data = useSeries(place);
   void retry;
@@ -160,6 +202,11 @@ export default function Investigate({ params, onResult }: Props) {
     });
   }, [varId, place, view, start, end]);
 
+  useEffect(() => {
+    setCellMap({ status: "idle", result: null, error: null });
+    setSelectedCellId(null);
+  }, [varId, place.id, start, end]);
+
   // Guided demo: sets the controls one step at a time, nothing else.
   useEffect(() => {
     if (!tour) return;
@@ -196,7 +243,45 @@ export default function Investigate({ params, onResult }: Props) {
     } catch (error) {
       setScanner({ status: "error", result: null, error: error instanceof Error ? error.message : "Could not scan this place." });
     }
+
   }
+
+  async function mapCellTrends() {
+    if (!place.regionId || place.kind === "world" || place.kind === "custom") {
+      setCellMap({ status: "error", result: null, error: "Cell trends require a Vidarbha boundary selection." });
+      return;
+    }
+    setCellMap({ status: "loading", result: null, error: null });
+    try {
+      const bounds = await boundsForRegion(place.regionId);
+      const result = await fetchRegionalCellTrends({ variableId: card.id, startYear: start, endYear: end, bounds });
+      setCellMap({ status: "ready", result, error: null });
+    } catch (error) {
+      setCellMap({ status: "error", result: null, error: error instanceof Error ? error.message : "Could not load regional cell trends." });
+    }
+  }
+
+  const cellOverlays = useMemo(() => {
+    if (!cellMap.result) return [];
+    const extent = cellExtent(cellMap.result.cells);
+    const maxSlope = Math.max(...cellMap.result.cells.map((cell) => Math.abs(cell.stats?.sen_slope ?? 0)), 1e-12);
+    return cellMap.result.cells.map((cell) => {
+      const slope = cell.stats?.sen_slope ?? 0;
+      const significant = Boolean(cell.stats && cell.stats.p_value < 0.05);
+      const base = slope >= 0 ? [213, 94, 0] : [0, 114, 178];
+      const alpha = significant ? 0.72 : 0.22;
+      return {
+        id: `trend-${cell.id}`,
+        cellId: cell.id,
+        latitude: cell.latitude,
+        longitude: cell.longitude,
+        halfWidth: extent.halfWidth,
+        halfHeight: extent.halfHeight,
+        height: Math.abs(slope) / maxSlope * 30_000,
+        color: `rgba(${base.join(",")},${alpha})`,
+      };
+    });
+  }, [cellMap.result]);
 
   const tourCaptions = tour
     ? [
@@ -226,6 +311,12 @@ export default function Investigate({ params, onResult }: Props) {
           </button>
         </div>
       )}
+      <nav className="step-rail" aria-label="Investigation steps">
+        <a href="#step-what"><span>1</span><strong>{copy.flow.what}</strong><small>{copy.flow.chooseVariable}</small></a>
+        <a href="#step-where"><span>2</span><strong>{copy.flow.where}</strong><small>{copy.flow.choosePlace}</small></a>
+        <a href="#step-when"><span>3</span><strong>{copy.flow.when}</strong><small>{copy.flow.chooseYears}</small></a>
+        <a href="#results"><span>4</span><strong>{copy.flow.results}</strong><small>{copy.flow.readEvidence}</small></a>
+      </nav>
 
       <aside className="inv-controls" aria-label="Investigation controls">
         <div className="demo-strip">
@@ -239,12 +330,12 @@ export default function Investigate({ params, onResult }: Props) {
           </div>
         </div>
 
-        <section className="step" aria-labelledby="s1">
+        <section className="step" id="step-what" aria-labelledby="s1">
           <header>
             <span className="step-n">1</span>
             <div>
-              <h2 id="s1">What do you want to investigate?</h2>
-              <p>Pick a measured quantity. Each card has a plain-language definition.</p>
+              <h2 id="s1">{copy.flow.what} do you want to investigate?</h2>
+              <p>Pick a measured quantity. Each card has a plain-language definition and units.</p>
             </div>
           </header>
           <div className="var-grid" role="radiogroup" aria-label="Variable">
@@ -260,6 +351,7 @@ export default function Investigate({ params, onResult }: Props) {
                   aria-checked={sel}
                   disabled={unavailable}
                   className={`var-card ${sel ? "is-selected" : ""}`}
+                  title={`${v.short_name}: ${v.definition}`}
                   style={{ ["--a" as string]: ac.a, ["--b" as string]: ac.b, animationDelay: `${i * 40}ms` }}
                   onClick={() => pickVariable(v.id)}
                 >
@@ -284,11 +376,11 @@ export default function Investigate({ params, onResult }: Props) {
           </p>
         </section>
 
-        <section className="step" aria-labelledby="s2">
+        <section className="step" id="step-where" aria-labelledby="s2">
           <header>
             <span className="step-n">2</span>
             <div>
-              <h2 id="s2">Where?</h2>
+              <h2 id="s2">{copy.flow.where}</h2>
               <p>One NASA grid cell (about 50 km wide) centred on the place.</p>
             </div>
           </header>
@@ -302,7 +394,7 @@ export default function Investigate({ params, onResult }: Props) {
           {placeGroup === "vidarbha" && (
             <div className="place-chips">
               {[VIDARBHA_PLACE, ...DISTRICT_PLACES].map((p) => (
-                <button key={p.id} className={`chip ${place.id === p.id ? "is-on" : ""}`} onClick={() => selectPlace(p)}>{p.label}</button>
+                <button key={p.id} className={`chip ${place.id === p.id ? "is-on" : ""}`} onClick={() => selectPlace(p)} title={p.sub}>{p.label}</button>
               ))}
             </div>
           )}
@@ -328,32 +420,14 @@ export default function Investigate({ params, onResult }: Props) {
               <button className="btn" type="submit"><MapPin size={14} aria-hidden="true" /> Go</button>
             </form>
           )}
-          <div className="globe-card">
-            <Suspense fallback={<div className="globe-loading">Loading 3D globe…</div>}>
-            <Globe
-              selectedRegionId={place.regionId ?? "IN-MH-VID"}
-              onSelectRegion={(id) => {
-                const p = ALL_PLACES.find((x) => x.regionId === id);
-                if (p) selectPlace(p);
-              }}
-              showBoundaries
-              showWorldBoundaries
-              showIndiaStates
-              preset={place.kind === "world" || place.kind === "custom" ? "india" : "vidarbha"}
-              marker={{ lat: place.lat, lon: place.lon, label: place.label }}
-              onImageryStatus={() => undefined}
-            />
-            </Suspense>
-            <span className="globe-cap"><Compass size={12} aria-hidden="true" /> {place.label} · {place.lat.toFixed(2)}°, {place.lon.toFixed(2)}°</span>
-          </div>
         </section>
 
-        <section className="step" aria-labelledby="s3">
+        <section className="step" id="step-when" aria-labelledby="s3">
           <header>
             <span className="step-n">3</span>
             <div>
-              <h2 id="s3">How and when?</h2>
-              <p>Look at the whole year, one season, one month, or remove the seasons.</p>
+              <h2 id="s3">{copy.flow.when}</h2>
+              <p>Choose a time window and whether to show the <Term id="seasonal-cycle">seasonal cycle</Term>.</p>
             </div>
           </header>
           <div className="seg seg--wrap" role="tablist" aria-label="View">
@@ -363,6 +437,7 @@ export default function Investigate({ params, onResult }: Props) {
                 role="tab"
                 aria-selected={view.kind === k}
                 className={view.kind === k ? "is-on" : ""}
+                title={k === "annual" ? "Aggregate all valid months into one value per year." : k === "season" ? "Compare the selected season across years." : k === "month" ? "Compare one calendar month across years." : "Remove the usual seasonal cycle before testing the trend."}
                 onClick={() => setView(k === "annual" ? { kind: "annual" } : k === "anomaly" ? { kind: "anomaly" } : k === "season" ? { kind: "season", seasonId: "monsoon" } : { kind: "month", month: 7 })}
               >
                 {k === "annual" ? "Whole year" : k === "season" ? "Season" : k === "month" ? "One month" : "Anomaly"}
@@ -401,8 +476,42 @@ export default function Investigate({ params, onResult }: Props) {
 
       <section className="inv-results" id="results" aria-live="polite" style={{ ["--a" as string]: accent.a, ["--b" as string]: accent.b }}>
         <ResultsHeader card={card} place={place} data={data} />
-        <TrendScannerPanel state={scanner} onScan={scanPlace} onSelect={(id) => { setVarId(id); setView({ kind: "annual" }); }} />
-        {robustness && <RobustnessPanel {...robustness} onWindow={(window) => { setStart(window.startYear); setEnd(window.endYear); setView({ kind: "annual" }); }} />}
+        <section className="map-workspace card" aria-labelledby="map-workspace-title">
+          <div className="card-head">
+            <div>
+              <span className="eyebrow">Live map workspace</span>
+              <h2 id="map-workspace-title">Where is this signal?</h2>
+              <p className="hint">Select a place in the left panel, then use the map to inspect its NASA grid cell.</p>
+            </div>
+            <span className="map-location"><Compass size={14} aria-hidden="true" /> {place.label}</span>
+          </div>
+          <div className="globe-card">
+            <Suspense fallback={<div className="globe-loading">Loading 3D globe…</div>}>
+              <Globe
+                selectedRegionId={place.regionId ?? "IN-MH-VID"}
+                onSelectRegion={(id) => {
+                  const p = ALL_PLACES.find((x) => x.regionId === id);
+                  if (p) selectPlace(p);
+                }}
+                showBoundaries
+                showWorldBoundaries
+                showIndiaStates
+                preset={place.kind === "world" || place.kind === "custom" ? "india" : "vidarbha"}
+                marker={{ lat: place.lat, lon: place.lon, label: place.label }}
+                cellOverlays={cellOverlays}
+                onSelectCell={setSelectedCellId}
+                onImageryStatus={() => undefined}
+              />
+            </Suspense>
+            <span className="globe-cap"><Compass size={12} aria-hidden="true" /> {place.label} · {place.lat.toFixed(2)}°, {place.lon.toFixed(2)}°</span>
+          </div>
+          <div className="cell-map-controls">
+            <button className="btn btn--ghost" onClick={() => void mapCellTrends()} disabled={cellMap.status === "loading" || place.kind === "world" || place.kind === "custom"}>
+              {cellMap.status === "loading" ? "Mapping cell trends…" : "Map regional cell trends"}
+            </button>
+            <span className="hint">Uses live NASA POWER daily regional grid cells for the selected variable and years.</span>
+          </div>
+        </section>
         {data.status === "loading" && <Skeleton />}
         {data.status === "error" && (
           <div className="notice notice--error" role="alert">
@@ -447,9 +556,15 @@ export default function Investigate({ params, onResult }: Props) {
             <ResultsTable analysis={analysis} card={card} place={place} />
             {data.meta && <Lineage card={card} meta={data.meta} analysis={analysis} place={place} offline={data.offlineSnapshot} />}
             <Provenance card={card} data={data} />
+            <p className="glossary-strip"><strong>Quick glossary:</strong> <Term id="trend">Trend</Term> · <Term id="significant">Significant</Term> · <Term id="p-value">p-value</Term> · <Term id="sen">Sen&apos;s slope</Term> · <Term id="seasonal-cycle">Seasonal cycle</Term></p>
           </>
         )}
         {data.status === "ready" && series && !analysis && rangeOk === false && <div className="notice notice--warn"><AlertTriangle size={20} aria-hidden="true" /><div><strong>Check the years.</strong><p>Pick a range of at least five years between {FIRST_YEAR} and {LAST_COMPLETE_YEAR}.</p></div></div>}
+        <div className="secondary-tools">
+          <TrendScannerPanel state={scanner} onScan={scanPlace} onSelect={(id) => { setVarId(id); setView({ kind: "annual" }); }} />
+          <CellTrendPanel state={cellMap} selectedCellId={selectedCellId} onSelectCell={setSelectedCellId} />
+          {robustness && <RobustnessPanel {...robustness} onWindow={(window) => { setStart(window.startYear); setEnd(window.endYear); setView({ kind: "annual" }); }} />}
+        </div>
       </section>
     </div>
   );
@@ -576,6 +691,43 @@ function TrendScannerPanel({
   );
 }
 
+function CellTrendPanel({
+  state,
+  selectedCellId,
+  onSelectCell,
+}: {
+  state: { status: "idle" | "loading" | "ready" | "error"; result: RegionalTrendResult | null; error: string | null };
+  selectedCellId: string | null;
+  onSelectCell: (id: string) => void;
+}) {
+  if (state.status === "idle") return null;
+  const cells = state.result?.cells ?? [];
+  const rising = cells.filter((cell) => cell.stats?.p_value !== undefined && cell.stats.p_value < 0.05 && cell.stats.sen_slope > 0).length;
+  const falling = cells.filter((cell) => cell.stats?.p_value !== undefined && cell.stats.p_value < 0.05 && cell.stats.sen_slope < 0).length;
+  const notSignificant = cells.length - rising - falling;
+  const selected = cells.find((cell) => cell.id === selectedCellId);
+  return (
+    <section className="card cell-trends" aria-labelledby="cell-trends-title">
+      <div className="card-head">
+        <div>
+          <h2 id="cell-trends-title">Where is it changing?</h2>
+          <p className="hint">Each rectangle is one approximately 50 km NASA POWER model grid cell. Height scales consistently with absolute Sen&apos;s slope; faded cells are not significant at p ≥ 0.05.</p>
+        </div>
+      </div>
+      {state.status === "error" && <p className="field-error" role="alert">{state.error}</p>}
+      {state.status === "loading" && <p className="hint">Requesting real NASA POWER regional cell data…</p>}
+      {state.result && (
+        <>
+          <p className="cell-summary">{rising} cells rising, {falling} falling, {notSignificant} not significant{rising > 0 && falling > 0 ? " · Opposite trends within this region." : "."}</p>
+          {selected && <div className="hint">Selected cell: {selected.latitude.toFixed(3)}°, {selected.longitude.toFixed(3)}° · {selected.stats ? `Sen's slope ${selected.stats.sen_slope.toFixed(3)} ${selected.units}, p=${selected.stats.p_value.toFixed(4)}, n=${selected.stats.sample_count}` : "insufficient data"}<details><summary>Show cell annual series</summary><div className="cell-series">{selected.years.map((year, index) => <span key={year}>{year}: {selected.annualValues[index] === null ? "missing" : `${selected.annualValues[index]} ${selected.units}`}</span>)}</div></details></div>}
+          <div className="cell-legend"><span><i className="cell-legend-swatch cell-legend-swatch--up" /> Significant increasing</span><span><i className="cell-legend-swatch cell-legend-swatch--down" /> Significant decreasing</span><span><i className="cell-legend-swatch cell-legend-swatch--faded" /> Not significant</span><span>Units: {state.result.units}/year · {state.result.cells.length} cells</span></div>
+        </>
+      )}
+      {state.result && <button className="btn btn--ghost" onClick={() => cells[0] && onSelectCell(cells[0].id)}>Select first cell</button>}
+    </section>
+  );
+}
+
 function clampYear(y: number) {
   return Math.min(LAST_COMPLETE_YEAR, Math.max(FIRST_YEAR, Math.round(y)));
 }
@@ -620,15 +772,18 @@ function VerdictCard({ analysis, card }: { analysis: Analysis; card: VariableCar
       <div className="verdict-body">
         <span className="eyebrow">{v.significant ? <><CheckCircle2 size={13} aria-hidden="true" /> Statistically <Term id="significant">significant</Term> {up ? "increase" : down ? "decrease" : "change"}</> : <><Layers size={13} aria-hidden="true" /> No <Term id="significant">statistically significant</Term> trend</>}</span>
         <h2>{v.headline}</h2>
-        <ul>
-          {v.lines.map((l, i) => <li key={i}>{l}</li>)}
-        </ul>
-        <details className="careful">
-          <summary><AlertTriangle size={14} aria-hidden="true" /> Be careful with this result ({v.warnings.length})</summary>
+        <details className="verdict-details">
+          <summary>Show evidence and caveats</summary>
           <ul>
-            {v.warnings.map((w, i) => <li key={i}>{w}</li>)}
-            <li>{card.caveat}</li>
+            {v.lines.map((l, i) => <li key={i}>{l}</li>)}
           </ul>
+          <div className="careful">
+            <strong><AlertTriangle size={14} aria-hidden="true" /> Be careful with this result ({v.warnings.length})</strong>
+            <ul>
+              {v.warnings.map((w, i) => <li key={i}>{w}</li>)}
+              <li>{card.caveat}</li>
+            </ul>
+          </div>
         </details>
       </div>
     </article>

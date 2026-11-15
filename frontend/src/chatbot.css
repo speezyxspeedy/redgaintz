@@ -60,12 +60,13 @@
   flex: none;
 }
 .chatbot-header-left { display: flex; align-items: center; gap: 9px; }
+.chatbot-avatar { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; color: #061522; background: #4fd1c5; }
 .chatbot-header-icon { color: #38c8f8; }
 .chatbot-title {
   font-size: 12.5px; font-weight: 800; letter-spacing: .1em; color: #eef4fa;
 }
 .chatbot-subtitle {
-  font-size: 8.5px; color: #5c7389;
+  display: block; margin-top: 2px; font-size: 9px; color: #8fa8b9;
   font-family: Consolas, "Courier New", monospace; letter-spacing: .08em;
 }
 .chatbot-live-dot {
@@ -337,6 +338,21 @@
 }
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */
+.chatbot-flow-row { padding: 7px 13px; border-bottom: 1px solid rgba(28,46,66,0.8); }
+.mode-toggle.is-on { border-color: #38c8f8; color: #38c8f8; }
+.candidate-picker { padding: 10px 13px; border-bottom: 1px solid rgba(28,46,66,0.8); color: #b0c4d4; font-size: 10px; }
+.candidate-options { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.candidate-options label { display: flex; align-items: center; gap: 4px; color: #7aa8c8; }
+.candidate-picker p { color: #5c7389; line-height: 1.4; margin: 8px 0 0; }
+.candidate-results { display: grid; gap: 5px; margin-top: 8px; }
+.candidate-results div { display: flex; justify-content: space-between; gap: 8px; border-top: 1px solid rgba(28,46,66,0.6); padding-top: 5px; }
+.candidate-results span { color: #7aa8c8; text-align: right; }
+.chatbot-key-modal { position: absolute; z-index: 3; inset: 56px 10px auto; display: grid; gap: 10px; padding: 14px; border: 1px solid #4fd1c5; border-radius: 10px; background: #0c2236; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+.chatbot-key-modal label { display: grid; gap: 6px; color: #eaf2f6; font-size: 12px; }
+.chatbot-key-modal input { min-height: 40px; }
+.chatbot-key-link { color: #4fd1c5; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.chatbot-key-modal button { justify-self: start; display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 12px; border: 0; border-radius: 7px; background: #ff8a1f; color: #1c0e00; font-weight: 700; cursor: pointer; }
+
 @media (max-width: 640px) {
   .chatbot-panel { right: 10px; bottom: 72px; width: calc(100vw - 20px); max-height: 72vh; }
   .chatbot-toggle { right: 12px; bottom: 14px; }

@@ -1,7 +1,10 @@
+import { Maximize2, Minus, Plus } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
   Cartesian2,
   Cartesian3,
+  PolygonHierarchy,
+  PolygonGraphics,
   Color,
   ColorMaterialProperty,
   ConstantPositionProperty,
@@ -37,6 +40,8 @@ interface GlobeProps {
   onImageryStatus: (status: "loading" | "ready" | "error") => void;
   /** A highlighted point (any place on Earth). The camera flies to it when it is not inside Vidarbha. */
   marker?: { lat: number; lon: number; label: string };
+  cellOverlays?: Array<{ id: string; latitude: number; longitude: number; halfWidth: number; halfHeight: number; height: number; color: string; cellId: string }>;
+  onSelectCell?: (cellId: string) => void;
 }
 
 const presets = {
@@ -192,6 +197,8 @@ export default function Globe({
   preset,
   onImageryStatus,
   marker,
+  cellOverlays = [],
+  onSelectCell,
 }: GlobeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<Viewer | null>(null);
@@ -199,6 +206,9 @@ export default function Globe({
   const worldRef = useRef<GeoJsonDataSource | null>(null);
   const indiaRef = useRef<GeoJsonDataSource | null>(null);
   const centersRef = useRef<Map<string, { lng: number; lat: number }>>(new Map());
+  const cellEntitiesRef = useRef<Entity[]>([]);
+  const cellSelectRef = useRef(onSelectCell);
+  cellSelectRef.current = onSelectCell;
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -358,7 +368,9 @@ export default function Globe({
         const picked = viewer.scene.pick(event.position);
         if (picked?.id instanceof Entity) {
           const properties = picked.id.properties?.getValue(JulianDate.now());
-          if (typeof properties?.region_id === "string") {
+          if (typeof properties?.cell_id === "string") {
+            cellSelectRef.current?.(properties.cell_id);
+          } else if (typeof properties?.region_id === "string") {
             onSelectRegion(properties.region_id);
           }
         }
@@ -431,6 +443,7 @@ export default function Globe({
     fetch(`${import.meta.env.BASE_URL}boundaries/IN-MH-VID.display.geojson`)
       .then((response) => {
         if (!response.ok) throw new Error("Boundary file could not be loaded.");
+        if (!(response.headers.get("content-type") ?? "").toLowerCase().includes("json")) throw new Error("Boundary response was not JSON.");
         return response.json();
       })
       .then((geojson) => {
@@ -530,10 +543,40 @@ export default function Globe({
       worldRef.current = null;
       indiaRef.current = null;
       viewerRef.current = null;
+      cellEntitiesRef.current = [];
       if (!viewer.isDestroyed()) viewer.destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const viewer = viewerRef.current;
+    if (!viewer) return;
+    for (const entity of cellEntitiesRef.current) viewer.entities.remove(entity);
+    cellEntitiesRef.current = [];
+    for (const overlay of cellOverlays) {
+      const positions = Cartesian3.fromDegreesArray([
+        overlay.longitude - overlay.halfWidth, overlay.latitude - overlay.halfHeight,
+        overlay.longitude + overlay.halfWidth, overlay.latitude - overlay.halfHeight,
+        overlay.longitude + overlay.halfWidth, overlay.latitude + overlay.halfHeight,
+        overlay.longitude - overlay.halfWidth, overlay.latitude + overlay.halfHeight,
+      ]);
+      const entity = viewer.entities.add(new Entity({
+        id: overlay.id,
+        properties: { cell_id: overlay.cellId },
+        polygon: new PolygonGraphics({
+          hierarchy: new ConstantProperty(new PolygonHierarchy(positions)),
+          material: new ColorMaterialProperty(Color.fromCssColorString(overlay.color)),
+          height: new ConstantProperty(0),
+          extrudedHeight: new ConstantProperty(overlay.height),
+          outline: new ConstantProperty(true),
+          outlineColor: new ConstantProperty(Color.WHITE.withAlpha(0.7)),
+        }),
+      }));
+      cellEntitiesRef.current.push(entity);
+    }
+    viewer.scene.requestRender();
+  }, [cellOverlays]);
 
   useEffect(() => {
     const viewer = viewerRef.current;
@@ -636,6 +679,21 @@ export default function Globe({
       className="cesium-globe"
       ref={containerRef}
       aria-label="Interactive 3D globe — real satellite imagery — Vidarbha Earth System Trend Detective"
-    />
+    >
+      <div className="globe-controls" aria-label="Map controls">
+        <button type="button" onClick={() => {
+          const viewer = viewerRef.current;
+          if (viewer) viewer.camera.zoomIn(Math.max(viewer.camera.positionCartographic.height * 0.25, 1));
+        }} aria-label="Zoom in" title="Zoom in"><Plus size={16} aria-hidden="true" /></button>
+        <button type="button" onClick={() => {
+          const viewer = viewerRef.current;
+          if (viewer) viewer.camera.zoomOut(Math.max(viewer.camera.positionCartographic.height * 0.25, 1));
+        }} aria-label="Zoom out" title="Zoom out"><Minus size={16} aria-hidden="true" /></button>
+        <button type="button" onClick={() => {
+          if (document.fullscreenElement) void document.exitFullscreen();
+          else void containerRef.current?.requestFullscreen();
+        }} aria-label="Toggle map fullscreen" title="Fullscreen"><Maximize2 size={16} aria-hidden="true" /></button>
+      </div>
+    </div>
   );
 }

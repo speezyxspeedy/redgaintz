@@ -8,6 +8,7 @@ import { fetchPowerPoint } from "../lib/power";
 import { fmtP } from "../lib/verdict";
 import { VARIABLES, getVariable, rulesFor } from "../lib/variables";
 import { DISTRICT_PLACES } from "../theme";
+import { getCopy, type Language } from "../i18n";
 
 interface Row { id: string; name: string; lat: number; lon: number; cell: string; slope: number; pct: number | null; p: number; sig: boolean; units: string }
 type Geo = { features: { properties: { region_id?: string; level?: string }; geometry: { type: string; coordinates: any } }[] };
@@ -23,7 +24,8 @@ async function pool<T, R>(items: T[], n: number, fn: (x: T) => Promise<R>): Prom
   return out;
 }
 
-export default function Atlas() {
+export default function Atlas({ language = "en" }: { language?: Language }) {
+  const copy = getCopy(language);
   const [varId, setVarId] = useState("PRECTOTCORR");
   const [monsoon, setMonsoon] = useState(true);
   const [geo, setGeo] = useState<Geo | null>(null);
@@ -32,7 +34,14 @@ export default function Atlas() {
   const card = getVariable(varId);
   const view = monsoon && varId === "PRECTOTCORR" ? ({ kind: "season", seasonId: "monsoon" } as const) : ({ kind: "annual" } as const);
 
-  useEffect(() => { fetch(`${import.meta.env.BASE_URL}boundaries/IN-MH-VID.display.geojson`).then((r) => r.json()).then(setGeo).catch(() => {}); }, []);
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}boundaries/IN-MH-VID.display.geojson`).then(async (r) => {
+      if (!r.ok) throw new Error(`Boundary request failed (${r.status}).`);
+      const type = r.headers.get("content-type") ?? "";
+      if (!type.includes("json")) throw new Error("Boundary response was not JSON.");
+      return r.json() as Promise<Geo>;
+    }).then(setGeo).catch(() => setGeo(null));
+  }, []);
 
   useEffect(() => {
     let live = true; setRows(null); setFailed(0);
@@ -72,7 +81,7 @@ export default function Atlas() {
   return (
     <div className="page atlas">
       <header className="page-head">
-        <h1>Where in Vidarbha is it changing?</h1>
+        <h1>{copy.site.atlasTitle}</h1>
         <p className="lede">The same trend test, run on all 11 districts at once, using NASA POWER data for {FIRST_YEAR}–{LAST_COMPLETE_YEAR}. Solid colour means the change is statistically significant. Hatched means it is not.</p>
       </header>
 
