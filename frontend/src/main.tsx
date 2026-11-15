@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import "./styles.css";
 import App from "./App";
@@ -19,4 +20,4 @@ class Boundary extends React.Component<{ children: React.ReactNode }, { failed: 
   }
 }
 
-ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><Boundary><App /></Boundary></React.StrictMode>);
+ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><Boundary><App /><SpeedInsights /></Boundary></React.StrictMode>);
